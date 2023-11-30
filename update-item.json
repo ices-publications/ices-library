@@ -1,0 +1,41 @@
+{
+    "title": "{{title}}",
+    "keywords": [
+        "ICES policy",
+        "ICES strategy",
+        "statutory meeting",
+        "delegates documents",
+        "ICES finance"
+    ],
+    "categories": [
+        30428
+    ],
+    "license": 142,
+    "timeline": {
+        "publisherPublication": "{{year}}-01-01"
+    },
+    "custom_fields_list": [
+        {
+            "name": "Recommended citation",
+            "value": "ICES. {{year}}. [Document title]. ICES {{meeting}} Statutory Meeting, {{dates}}. CM {{year}} Del: [Document number]. [DOI]"
+        },
+        {
+            "name": "Published under the auspices of the following ICES Steering Group or Committee",
+            "value": [
+                "ACOM",
+                "Bureau",
+                "Council",
+                "SCICOM"
+            ]
+        },
+        {
+            "name": "Series",
+            "value": "ICES Committee and Delegate meeting reports"
+        },
+        {
+            "name": "Meeting details",
+            "value": "{{dates}}"
+        }
+    ],
+    "group_id": 37185
+}
