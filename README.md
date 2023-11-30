@@ -1,7 +1,7 @@
 # Interacting with ICES library through the API
 This is a place for guidance on how to create and manage entries, pull statistics and metadata out of the ICES library (on figshare platform).
 
-Instructions are mostly kept on the wiki pages.
+Instructions are mostly kept on the [wiki pages](https://github.com/ices-publications/ices-library/wiki).
 
 ## Full figshare API documentation
 This is available here: https://docs.figshare.com/
