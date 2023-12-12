@@ -1,0 +1,35 @@
+{
+    "title": "{{stock-code}}",
+    "description": "{{title}}",
+    "timeline": {
+        "publisherPublication": "{{pub-date}}"
+    },
+    "categories": [
+        30425,
+        {{ecoregions}}
+    ],
+    "keywords": [
+        "{{stock-code}}",
+        "{{commmon-name}}",
+        "{{latin-name}},
+        "fishing effort",
+        "fishing opportunities",
+        "catch"
+    ],
+    "related_materials": [
+        {
+            "identifier": "10.17895/ices.pub.c.6976944",
+            "identifier_type": "DOI",
+            "relation": "IsPartOf",
+            "title": "ICES Advice 2024",
+            "is_linkout": true
+        }
+    ],
+    "custom_fields_list": [
+        {
+            "name": "Period covered by advice"
+            "value": {{valid-for}}
+        },
+    "license": 1,
+    "group_id": 37143
+    }
