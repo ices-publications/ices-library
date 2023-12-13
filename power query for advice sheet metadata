@@ -1,0 +1,29 @@
+// Overview 2023
+let
+    Source = Excel.Workbook(File.Contents("C:\Users\ffion\Downloads\Draft advice overview 2023 (8).xlsx"), null, true),
+    #"Overview 2023_Sheet" = Source{[Item="Overview 2023",Kind="Sheet"]}[Data],
+    #"Promoted Headers" = Table.PromoteHeaders(#"Overview 2023_Sheet", [PromoteAllScalars=true]),
+    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Ready for EG", type text}, {"Responsible Officer", type text}, {"StockKeyLabel", type text}, {"Eco Region", type text}, {"StockKeyDescription", type text}, {"EcoRegion in Advcie sharepoint", type text}, {"ExpertGroup", type text}, {"DataCategory", type number}, {"YearOfLastAssessment", Int64.Type}, {"AssessmentFrequency", Int64.Type}, {"YearOfNextAssessment", Int64.Type}, {"PubDate", type any}, {"Meeting start", type any}, {"New advice valid (years)", type any}, {"Responsible PO", type text}, {"comments", type text}, {"Previsous advice type = abbreviated", type text}}),
+    #"Removed Other Columns" = Table.SelectColumns(#"Changed Type",{"StockKeyLabel", "Eco Region", "StockKeyDescription", "PubDate", "New advice valid (years)"}),
+    #"Duplicated Column" = Table.DuplicateColumn(#"Removed Other Columns", "StockKeyDescription", "StockKeyDescription - Copy"),
+    #"Duplicated Column1" = Table.DuplicateColumn(#"Duplicated Column", "StockKeyDescription - Copy", "StockKeyDescription - Copy - Copy"),
+    #"Extracted Text Before Delimiter" = Table.TransformColumns(#"Duplicated Column1", {{"StockKeyDescription - Copy", each Text.BeforeDelimiter(_, "("), type text}}),
+    #"Lowercased Text" = Table.TransformColumns(#"Extracted Text Before Delimiter",{{"StockKeyDescription - Copy", Text.Lower, type text}}),
+    #"Renamed Columns" = Table.RenameColumns(#"Lowercased Text",{{"StockKeyDescription - Copy", "common-name"}}),
+    #"Extracted Text Between Delimiters" = Table.TransformColumns(#"Renamed Columns", {{"StockKeyDescription - Copy - Copy", each Text.BetweenDelimiters(_, "(", ")"), type text}}),
+    #"Renamed Columns1" = Table.RenameColumns(#"Extracted Text Between Delimiters",{{"StockKeyDescription - Copy - Copy", "latin-name"}}),
+    #"Replaced Value" = Table.ReplaceValue(#"Renamed Columns1","Arctic Ocean Ecoregion","30458",Replacer.ReplaceText,{"Eco Region"}),
+    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value","Azores Ecoregion","30485",Replacer.ReplaceText,{"Eco Region"}),
+    #"Replaced Value2" = Table.ReplaceValue(#"Replaced Value1","Bay of Biscay and the Iberian Coast Ecoregion","30494",Replacer.ReplaceText,{"Eco Region"}),
+    #"Replaced Value3" = Table.ReplaceValue(#"Replaced Value2","Barents Sea Ecoregion","30491",Replacer.ReplaceText,{"Eco Region"}),
+    #"Replaced Value4" = Table.ReplaceValue(#"Replaced Value3","Celtic Seas Ecoregion","30500",Replacer.ReplaceText,{"Eco Region"}),
+    #"Replaced Value5" = Table.ReplaceValue(#"Replaced Value4","Faroes Ecoregion","30503",Replacer.ReplaceText,{"Eco Region"}),
+    #"Replaced Value6" = Table.ReplaceValue(#"Replaced Value5","Greenland Sea Ecoregion","30509",Replacer.ReplaceText,{"Eco Region"}),
+    #"Replaced Value7" = Table.ReplaceValue(#"Replaced Value6","Iceland Sea Ecoregion","30512",Replacer.ReplaceText,{"Eco Region"}),
+    #"Replaced Value8" = Table.ReplaceValue(#"Replaced Value7","Greater North Sea Ecoregion","30506",Replacer.ReplaceText,{"Eco Region"}),
+    #"Replaced Value9" = Table.ReplaceValue(#"Replaced Value8","Baltic Sea Ecoregion","30488",Replacer.ReplaceText,{"Eco Region"}),
+    #"Replaced Value10" = Table.ReplaceValue(#"Replaced Value9","Norwegian Sea Ecoregion","30530",Replacer.ReplaceText,{"Eco Region"}),
+    #"Replaced Value11" = Table.ReplaceValue(#"Replaced Value10","Oceanic Northeast Atlantic Ecoregion","30533",Replacer.ReplaceText,{"Eco Region"}),
+    #"Renamed Columns2" = Table.RenameColumns(#"Replaced Value11",{{"StockKeyLabel", "stock-code"}, {"Eco Region", "ecoregions"}, {"StockKeyDescription", "title"}, {"PubDate", "pub-date"}, {"New advice valid (years)", "valid-for"}})
+in
+    #"Renamed Columns2"
