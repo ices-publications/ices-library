@@ -1,0 +1,23 @@
+let
+    Source = Excel.Workbook(File.Contents("D:\Profile\Desktop\CM-docs-list-2014.xlsx"), null, true),
+    #"2014_Sheet" = Source{[Item="2014",Kind="Sheet"]}[Data],
+    #"Promoted Headers" = Table.PromoteHeaders(#"2014_Sheet", [PromoteAllScalars=true]),
+    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"article-ID", Int64.Type}, {"group-id", Int64.Type}, {"title", type text}, {"authors", type text}, {"Column5", type text}, {"description", type text}, {"keywords", type text}, {"doc-number", Int64.Type}, {"symposia", type text}, {"cm-year", Int64.Type}, {"session", type text}, {"letter", type text}}),
+    #"Duplicated Column" = Table.DuplicateColumn(#"Changed Type", "authors", "authors - Copy"),
+    #"Added Prefix" = Table.TransformColumns(#"Duplicated Column", {{"authors - Copy", each "[ { ""authors"": """ & _, type text}}),
+    #"Replaced Value" = Table.ReplaceValue(#"Added Prefix",", ",""" }, { ""authors"": """,Replacer.ReplaceText,{"authors - Copy"}),
+    #"Added Suffix" = Table.TransformColumns(#"Replaced Value", {{"authors - Copy", each _ & """ } ]", type text}}),
+    #"Renamed Columns" = Table.RenameColumns(#"Added Suffix",{{"authors - Copy", "authors json"}}),
+    #"Reordered Columns" = Table.ReorderColumns(#"Renamed Columns",{"article-ID", "group-id", "title", "authors", "authors json", "Column5", "description", "keywords", "doc-number", "symposia", "cm-year", "session", "letter"}),
+    #"Removed Columns" = Table.RemoveColumns(#"Reordered Columns",{"Column5"}),
+    #"Added Prefix1" = Table.TransformColumns(#"Removed Columns", {{"keywords", each "[ """ & _, type text}}),
+    #"Replaced Value1" = Table.ReplaceValue(#"Added Prefix1",", ",""", """,Replacer.ReplaceText,{"keywords"}),
+    #"Added Suffix1" = Table.TransformColumns(#"Replaced Value1", {{"keywords", each _ & """] ", type text}}),
+    #"Renamed Columns1" = Table.RenameColumns(#"Added Suffix1",{{"keywords", "keywords-json"}}),
+    #"Replaced Value2" = Table.ReplaceValue(#"Renamed Columns1","authors","name",Replacer.ReplaceText,{"authors json"}),
+    #"Removed Columns1" = Table.RemoveColumns(#"Replaced Value2",{"authors"}),
+    #"Renamed Columns2" = Table.RenameColumns(#"Removed Columns1",{{"authors json", "authors"}, {"keywords-json", "keywords"}}),
+    #"Reordered Columns1" = Table.ReorderColumns(#"Renamed Columns2",{"article-ID", "group-id", "title", "authors", "description", "keywords", "letter", "doc-number", "symposia", "cm-year", "session"}),
+    #"Merged Columns" = Table.CombineColumns(Table.TransformColumnTypes(#"Reordered Columns1", {{"doc-number", type text}}, "en-GB"),{"letter", "doc-number"},Combiner.CombineTextByDelimiter(":", QuoteStyle.None),"abstract-reference")
+in
+    #"Merged Columns"
